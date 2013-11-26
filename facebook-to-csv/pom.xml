@@ -1,0 +1,121 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>hu.acsordas.camel</groupId>
+	<artifactId>facebook-to-csv</artifactId>
+	<packaging>war</packaging>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>facebook-to-csv Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+
+
+	<properties>
+		<camel-version>2.12.1</camel-version>
+		<springframework.version>3.2.1.RELEASE</springframework.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${springframework.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-core</artifactId>
+			<version>${camel-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-spring</artifactId>
+			<version>${camel-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-http</artifactId>
+			<version>${camel-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-jackson</artifactId>
+			<version>${camel-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.camel</groupId>
+			<artifactId>camel-quartz</artifactId>
+			<version>${camel-version}</version>
+		</dependency>
+	</dependencies>
+	<build>
+		<finalName>facebook-to-csv</finalName>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.cargo</groupId>
+				<artifactId>cargo-maven2-plugin</artifactId>
+				<configuration>
+					<container>
+						<containerId>tomcat7x</containerId>
+						<type>remote</type>
+					</container>
+					<configuration>
+						<type>runtime</type>
+						<properties>
+							<cargo.server.settings>${server.id}</cargo.server.settings>
+							<cargo.hostname>${remote.hostname}</cargo.hostname>
+							<cargo.protocol>${remote.protocol}</cargo.protocol>
+							<cargo.servlet.port>${remote.port}</cargo.servlet.port>
+						</properties>
+					</configuration>
+					<deployer>
+						<type>remote</type>
+					</deployer>
+					<deployables>
+						<deployable>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>facebook-to-csv</artifactId>
+							<type>war</type>
+							<properties>
+								<context>${remote.context}</context>
+							</properties>
+						</deployable>
+					</deployables>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-war-plugin</artifactId>
+				<!-- <configuration> -->
+				<!-- <webXml>${webapp.home}/WEB-INF/web.xml</webXml> -->
+				<!-- </configuration> -->
+			</plugin>
+			<plugin>
+				<groupId>org.apache.camel</groupId>
+				<artifactId>camel-maven-plugin</artifactId>
+				<version>${camel-version}</version>
+				<!-- <configuration> -->
+				<!-- <applicationContextUri>src/main/webapp/WEB-INF/camel*.xml</applicationContextUri> -->
+				<!-- </configuration> -->
+			</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>tomcat-localhost</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<server.id>localhost</server.id>
+				<remote.hostname>localhost</remote.hostname>
+				<remote.protocol>http</remote.protocol>
+				<remote.port>8080</remote.port>
+				<remote.context>/${project.build.finalName}</remote.context>
+			</properties>
+		</profile>
+	</profiles>
+</project>

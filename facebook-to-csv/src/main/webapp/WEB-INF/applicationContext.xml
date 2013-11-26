@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	http://www.springframework.org/schema/beans 
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://camel.apache.org/schema/spring 
+    http://camel.apache.org/schema/spring/camel-spring.xsd">
+
+
+	<camelContext xmlns="http://camel.apache.org/schema/spring">
+		<dataFormats>
+			<!-- here we define a Json data format with the id jack and that it should 
+				use the TestPojo as the class type when doing unmarshal. The unmarshalTypeName 
+				is optional, if not provided Camel will use a Map as the type -->
+			<json id="jack" library="Jackson"/>
+		</dataFormats>
+		<route >
+			<from uri="quartz://report?cron=10+*+*+*+*+?"/>
+			<to uri="http://graph.facebook.com/adam.csordas" />
+<!-- 			<unmarshal ref="jack" /> -->
+			<to uri="file://d:\tmp\fb-csv" />
+		</route>
+	</camelContext>
+
+
+</beans>
